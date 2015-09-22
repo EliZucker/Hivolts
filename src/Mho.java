@@ -1,4 +1,4 @@
 
-public class Mho {
+public class Mho extends Character{
 
 }
