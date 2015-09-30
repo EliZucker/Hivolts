@@ -1,4 +1,23 @@
+import java.awt.Color;
+import java.awt.Graphics;
 
-public class Fence extends Unit{
+import javax.swing.JPanel;
+
+
+public class Fence extends Unit {
+
+
+
+	public Fence(int x, int y, JPanel p) {
+		super(x, y, p);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		g.setColor(Color.BLACK);
+		g.fillOval(convertGridPointX(getX()), convertGridPointY(getY()), (int) (getP().getWidth()/12.0), (int) (getP().getHeight()/12.0));
+		
+	}
 
 }
