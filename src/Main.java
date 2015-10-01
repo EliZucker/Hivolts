@@ -9,7 +9,7 @@ public class Main {
 		JFrame win = new JFrame();
 		win.setDefaultCloseOperation(win.EXIT_ON_CLOSE);
 		win.setLayout(new BorderLayout());
-		win.setMinimumSize(new Dimension(50,75));
+		win.setMinimumSize(new Dimension(100,150));
 	
 		//add the GameBoard
 		Gameboard board = new Gameboard();

@@ -13,7 +13,8 @@ public class Mho extends Character{
 
 	@Override
 	public void paint(Graphics g) {
-		g.setColor(Color.BLUE);
+		g.setColor(Color.ORANGE);
+		g.fillOval(getPaintInfo()[0], getPaintInfo()[1], getPaintInfo()[2], getPaintInfo()[3]);
 		
 	}
 

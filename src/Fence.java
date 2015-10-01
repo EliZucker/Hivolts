@@ -15,6 +15,7 @@ public class Fence extends Unit {
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.BLACK);
+		g.fillRect(getPaintInfo()[0], getPaintInfo()[1], getPaintInfo()[2], getPaintInfo()[3]);
 		
 	}
 

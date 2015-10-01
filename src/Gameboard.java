@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 
 public class Gameboard extends JPanel {
 
-	private final int ANIMATION_SPEED = 10;
-	private final int ANIMATION_INTERVALS = 10;
+	public final int ANIMATION_SPEED = 10;
+	public final int ANIMATION_INTERVALS = 10;
 	private int animationInterval = 0;
 
 	private boolean animating = false;
@@ -41,42 +41,64 @@ public class Gameboard extends JPanel {
 	public boolean isAnimating() {
 		return animating;
 	}
-	
+
 	public char[][] getMoveList() {
 		return gameProcessor.getMoveList();
+	}
+
+	public void animate() {
+
+		while(true)
+		{
+			
+			if(animationInterval == ANIMATION_INTERVALS) {
+				toggleAnimating();
+				gameProcessor.animatingDone();
+				break;
+				
+			}
+			
+			repaint();
+
+			try{
+				Thread.sleep(ANIMATION_SPEED);
+			} catch(InterruptedException e){
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g); 
-		
-		if(animationInterval == ANIMATION_INTERVALS) {
-			toggleAnimating();
-			gameProcessor.animatingDone();
-		}
-			
+
+		paintBackground(g);
+
 		paintGameElements(g);
-		
-		if (animating) {
-			try {
-				Thread.sleep(ANIMATION_SPEED);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+
+	}
+
+	public void paintBackground(Graphics g) {
+		g.setColor(Color.BLACK);
+		for (int i = 1; i<12; i++) {
+			g.drawLine((int)(i*(getWidth()/12.0)), 0, (int)(i*(getWidth()/12.0)), getHeight());
+			g.drawLine(0, (int)(i*(getHeight()/12.0)), getWidth(), (int)(i*(getHeight()/12.0)));
 		}
 
-		
+
+
 
 	}
 
 	public void paintGameElements(Graphics g) {
-		
+
 		animationInterval+=1;
-		
+
 		for (int i = 0; i < 12; i++)
 			for (int j = 0; j < 12; j++) 
-					gameProcessor.getMap()[i][j].paint(g);
-		
+				gameProcessor.getMap()[i][j].paint(g);
+
 	}
 
 }

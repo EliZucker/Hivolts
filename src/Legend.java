@@ -16,5 +16,6 @@ public final class Legend {
 	public static final char DOWN_LEFT = '6';
 	public static final char UP_RIGHT = '7';
 	public static final char UP_LEFT = '8';
+	public static final char SHRINK = '9';
 
 }
