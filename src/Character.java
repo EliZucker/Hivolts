@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 
 public abstract class Character extends Unit{
 
-	public Character(int x, int y, JPanel p) {
-		super(x, y, p);
+	public Character(int x, int y, Gameboard board) {
+		super(x, y, board);
 		// TODO Auto-generated constructor stub
 	}
 	

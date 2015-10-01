@@ -6,15 +6,13 @@ import javax.swing.JPanel;
 
 public class Player extends Character{
 	
-	public Player(int x, int y, JPanel p) {
-		super(x, y, p);
+	public Player(int x, int y, Gameboard board) {
+		super(x, y, board);
 		
 	}
 
-	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.GREEN);
-		g.fillRect(convertGridPointX(getX()), convertGridPointY(getY()), (int) (getP().getWidth()/12.0), (int) (getP().getHeight()/12.0));
 		
 	}
 	
