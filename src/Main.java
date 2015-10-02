@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		//create a JFrame window to house our FlagPanel object
 		JFrame win = new JFrame();
-		win.setDefaultCloseOperation(win.EXIT_ON_CLOSE);
+		win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		win.setLayout(new BorderLayout());
 		win.setMinimumSize(new Dimension(100,150));
 	
@@ -18,5 +18,17 @@ public class Main {
 		//pack everything inside the frame and make it visible
 		win.pack();
 		win.setVisible(true);
+		
+		//Keep redrawing the GameBoard infinitely, but only do at at an interval of ANIMATION_SPEED
+		while(true)
+		{
+			board.repaint();
+			
+			try {
+				Thread.sleep(board.ANIMATION_SPEED);
+			} catch(InterruptedException e){
+				e.printStackTrace();
+			}
+		}
 	}
 }

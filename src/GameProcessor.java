@@ -1,4 +1,3 @@
-import javax.swing.JPanel;
 
 
 public class GameProcessor {
@@ -18,6 +17,7 @@ public class GameProcessor {
 					}
 				}
 				map[1][2] = new Player(1, 2, board);
+				board.toggleAnimating();
 	}
 	
 	public Unit[][] getMap() {
@@ -25,19 +25,18 @@ public class GameProcessor {
 	}
 	
 	public char[][] getMoveList() {
-//		for (int i = 0; i < 12; i++) {
-//			for (int j = 0; j < 12; j++) {
-//				moveList[i][j] = Legend.NO_MOVEMENT;
-//			}
-//		}
-//		moveList[1][2] = Legend.DOWN_RIGHT;
+		for (int i = 0; i < 12; i++) {
+			for (int j = 0; j < 12; j++) {
+				moveList[i][j] = Legend.NO_MOVEMENT;
+			}
+		}
+		moveList[1][2] = Legend.SHRINK;
 		return moveList;
 	}
 	
 	
 	//called by gameboard when animating is done
 	public void animatingDone() {
-		
 	}
 	
 	
