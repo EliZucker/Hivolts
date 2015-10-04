@@ -20,7 +20,10 @@ public class Player extends Character{
 	 */
 	public void paint(Graphics g) {
 		g.setColor(Color.GREEN);
-		g.fillOval(getPaintInfo()[0], getPaintInfo()[1], getPaintInfo()[2], getPaintInfo()[3]);
+		g.fillOval(getPaintInfo()[0]+getPadding(), getPaintInfo()[1]+getPadding(), getPaintInfo()[2]-getPadding()*2, getPaintInfo()[3]-getPadding()*2);
+		
+		g.setColor(Color.BLACK);
+		g.drawOval(getPaintInfo()[0]+getPadding(), getPaintInfo()[1]+getPadding(), getPaintInfo()[2]-getPadding()*2, getPaintInfo()[3]-getPadding()*2);
 		
 	}
 	

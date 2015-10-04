@@ -13,10 +13,10 @@ public class GameProcessor {
 					for (int j = 0; j < 12; j++) {
 						map[i][j] = new BlankSpace(i, j, board);
 						if (i == 0 || i == 11 || j ==0 || j == 11)
-							map[i][j] = new Fence(i, j, board);
+							map[i][j] = new Spike(i, j, board);
 					}
 				}
-				map[1][2] = new Player(1, 2, board);
+				map[2][2] = new Mho(2, 2, board);
 				board.toggleAnimating();
 	}
 	
@@ -30,13 +30,15 @@ public class GameProcessor {
 				moveList[i][j] = Legend.NO_MOVEMENT;
 			}
 		}
-		moveList[1][2] = Legend.SHRINK;
+		moveList[2][2] = Legend.DOWN_RIGHT;
 		return moveList;
 	}
 	
 	
 	//called by gameboard when animating is done
 	public void animatingDone() {
+		map[2][2] = new BlankSpace(2, 2, board);
+		map[3][3] = new Mho(3, 3, board);
 	}
 	
 	

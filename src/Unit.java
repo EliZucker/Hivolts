@@ -4,6 +4,7 @@ import java.awt.Graphics;
 public abstract class Unit{
 	private int x;
 	private int y;
+	private final int PADDING = 4;
 	private Gameboard board;
 
 	/**
@@ -41,6 +42,10 @@ public abstract class Unit{
 	 */
 	public int getY() {
 		return y;
+	}
+	
+	public int getPadding() {
+		return PADDING;
 	}
 	
 	/**
