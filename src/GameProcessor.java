@@ -28,7 +28,7 @@ public class GameProcessor {
 			}
 		}
 		
-		
+		//Generate 20 spikes in unique locations
 		while (fencesGenerated < 20) {
 			int x = 1+(int)(Math.random()*10);
 			int y = 1+(int)(Math.random()*10);
@@ -40,6 +40,7 @@ public class GameProcessor {
 			}
 		}
 		
+		//Generate 12 mhos in unique locations
 		while (mhosGenerated < 12) {
 			int x = 1+(int)(Math.random()*10);
 			int y = 1+(int)(Math.random()*10);
@@ -51,6 +52,7 @@ public class GameProcessor {
 			}
 		}
 		
+		//Generate a player in a unique location
 		while (true) {
 			int x = 1+(int)(Math.random()*10);
 			int y = 1+(int)(Math.random()*10);
