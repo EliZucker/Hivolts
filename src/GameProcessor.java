@@ -8,16 +8,59 @@ public class GameProcessor {
 	public GameProcessor(Gameboard board) {
 		this.board=board;
 		
-		//COMPLETELY TEMPORARY PLACEHOLDER CODE
-				for (int i = 0; i < 12; i++) {
-					for (int j = 0; j < 12; j++) {
-						map[i][j] = new BlankSpace(i, j, board);
-						if (i == 0 || i == 11 || j ==0 || j == 11)
-							map[i][j] = new Spike(i, j, board);
-					}
+		generateMap();
+	}
+	
+	public void generateMap() {
+		
+		boolean[][] spaceUsed = new boolean[12][12];
+		int fencesGenerated = 0;
+		int mhosGenerated = 0;
+		
+		//Fill the board with spaces and spikes on the edge
+		for (int i = 0; i < 12; i++) {
+			for (int j = 0; j < 12; j++) {
+				map[i][j] = new BlankSpace(i, j, board);
+				if (i == 0 || i == 11 || j ==0 || j == 11) {
+					map[i][j] = new Spike(i, j, board);
+					spaceUsed[i][j] = true;
 				}
-				map[2][2] = new Mho(2, 2, board);
-				board.toggleAnimating();
+			}
+		}
+		
+		
+		while (fencesGenerated < 20) {
+			int x = 1+(int)(Math.random()*10);
+			int y = 1+(int)(Math.random()*10);
+			
+			if(spaceUsed[x][y]==false) {
+				map[x][y] = new Spike(x, y, board);
+				spaceUsed[x][y] = true;
+				fencesGenerated++;
+			}
+		}
+		
+		while (mhosGenerated < 12) {
+			int x = 1+(int)(Math.random()*10);
+			int y = 1+(int)(Math.random()*10);
+			
+			if(spaceUsed[x][y]==false) {
+				map[x][y] = new Mho(x, y, board);
+				spaceUsed[x][y] = true;
+				mhosGenerated++;
+			}
+		}
+		
+		while (true) {
+			int x = 1+(int)(Math.random()*10);
+			int y = 1+(int)(Math.random()*10);
+			
+			if(spaceUsed[x][y]==false) {
+				map[x][y] = new Player(x, y, board);
+				spaceUsed[x][y] = true;
+				return;
+			}
+		}
 	}
 	
 	public Unit[][] getMap() {
