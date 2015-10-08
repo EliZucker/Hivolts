@@ -89,6 +89,7 @@ public class GameProcessor {
 	
 	private void gameOver() {
 		//still needs to be implemeneted
+		System.out.println("GAME OVER!");
 	}
 
 	private boolean validPlayerMove(char moveType) {
@@ -130,20 +131,23 @@ public class GameProcessor {
 		int j = getPlayerLocation()[1];
 
 		if (map[i][j] instanceof Player)
-			if (map[i+xOffset][j+yOffset] instanceof Spike || map[i+xOffset][j+yOffset] instanceof Mho) 
-				return false;
-
-		return true;
+			if (map[i+xOffset][j+yOffset] instanceof BlankSpace) 
+				return true;
+		
+		return false;
 
 	}
 
 	public void playerMove(char move) {
 		if(validPlayerMove(move)) {
-			moveList[getPlayerLocation()[0]][getPlayerLocation()[1]] = move;
+			
 			for (int i = 0; i < 12; i++)
 				for (int j = 0; j < 12; j++)
-					if (map[i][j] instanceof Mho)
-						moveMho(i, j);
+					moveList[i][j] = Legend.NO_MOVEMENT;
+			
+			moveList[getPlayerLocation()[0]][getPlayerLocation()[1]] = move;
+			moveMhos();
+			
 		}
 		else {
 			gameOver();
@@ -154,7 +158,17 @@ public class GameProcessor {
 
 	}
 	
-	public void moveMho(int x, int y) {
+	public void moveMhos() {
 		//still to be implemented
+		int mhoNum = 0;
+		int[] mhoLocations = new int[24];
+		
+		for (int i = 0; i < 12; i++)
+			for (int j = 0; j < 12; j++)
+				if (map[i][j] instanceof Mho) {
+					mhoLocations[mhoNum] = i;
+					mhoLocations[mhoNum+1] = j;
+					mhoNum++;
+				}
 	}
 }
