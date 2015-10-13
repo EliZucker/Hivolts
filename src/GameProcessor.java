@@ -1,13 +1,15 @@
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
 
 
 
 public class GameProcessor {
 	private Unit[][] map = new Unit[12][12];
-	private Unit[][] duplicateMap = new Unit[12][12];
+	private Unit[][] newMap = new Unit[12][12];
 	private char[][] moveList = new char[12][12];
 	Gameboard board;
-	
+
 	private int[] playerLocation = new int[2];
 	private ArrayList<Integer> mhoLocations = new ArrayList<Integer>();
 
@@ -21,7 +23,7 @@ public class GameProcessor {
 		boolean[][] spaceUsed = new boolean[12][12];
 		int fencesGenerated = 0;
 		int mhosGenerated = 0;
-		
+
 		//Fill the board with spaces and spikes on the edge
 		for (int i = 0; i < 12; i++) {
 			for (int j = 0; j < 12; j++) {
@@ -52,12 +54,12 @@ public class GameProcessor {
 
 			if(spaceUsed[x][y]==false) {
 				map[x][y] = new Mho(x, y, board);
-				
+
 				mhoLocations.add(x);
 				mhoLocations.add(y);
-				
+
 				spaceUsed[x][y] = true;
-				
+
 				mhosGenerated++;
 			}
 		}
@@ -88,18 +90,18 @@ public class GameProcessor {
 
 	//called by gameboard when animating is done
 	public void animatingDone() {
-
+		map = newMap.clone();
 	}
-	
+
 	public int[] getPlayerLocation() {
 		return playerLocation;
 	}
-	
+
 	public void setPlayerLocation(int[] playerLocation) {
 		this.playerLocation = playerLocation;
 	}
 
-	
+
 	private void gameOver() {
 		//still needs to be implemeneted
 		System.out.println("GAME OVER!");
@@ -145,9 +147,8 @@ public class GameProcessor {
 
 		if (map[x][y] instanceof Player)
 			if (map[x+xOffset][y+yOffset] instanceof BlankSpace) {
-				
-				duplicateMap[x][y] = new BlankSpace(x, y, board);
-				duplicateMap[x+xOffset][y+yOffset] = new Player(x+xOffset, y+yOffset, board);
+				newMap[x][y] = new BlankSpace(x, y, board);
+				newMap[x+xOffset][y+yOffset] = new Player(x+xOffset, y+yOffset, board);
 				return true;
 			}
 		return false;
@@ -156,38 +157,86 @@ public class GameProcessor {
 
 	public void playerMove(char move) {
 		if(validPlayerMove(move)) {
-			
-			duplicateMap = map.clone();
-			
+
+			newMap = map.clone();
+
 			for (int i = 0; i < 12; i++)
 				for (int j = 0; j < 12; j++)
 					moveList[i][j] = Legend.NO_MOVEMENT;
-			
+
 			moveList[getPlayerLocation()[0]][getPlayerLocation()[1]] = move;
-			
+
 			moveMhos();
-			
+
 			board.toggleAnimating();
-			
+
 		}
 		else {
 			gameOver();
 		}
 	}
-	
+
 	public void jump() {
 
 	}
-	
+
 	public void moveMhos() {
 		//still to be implemented
-		for (int i = 0; i < (mhoLocations.size()/2); i++) {
-			int playerX = getPlayerLocation()[0];
-			int playerY = getPlayerLocation()[1];
-			
-			int mhoX = (int) mhoLocations.get(i*2);
-			int mhoY = (int) mhoLocations.get(i*2+1);
-			
+		int playerX = getPlayerLocation()[0];
+		int playerY = getPlayerLocation()[1];
+
+		//Check if any mhos are perfectly vertically or horizontally alligned
+
+		for (ListIterator<Integer> iterator = mhoLocations.listIterator(); iterator.hasNext();) {
+			int mhoX = iterator.next();
+			int mhoY = iterator.next();
+
+			if (mhoX==playerX) {
+				iterator.remove();
+				iterator.previous();
+				iterator.remove();
+
+				if (playerY>mhoY) {
+					moveList[mhoX][mhoY] = Legend.DOWN;
+					newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
+					newMap[mhoX][mhoY+1] = new Mho(mhoX, mhoY+1, board);
+				} else {
+					moveList[mhoX][mhoY] = Legend.UP;
+					newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
+					newMap[mhoX][mhoY-1] = new Mho(mhoX, mhoY-1, board);
+				}
+			} else if (mhoY==playerY) {
+				iterator.remove();
+				iterator.previous();
+				iterator.remove();
+
+				if (playerX>mhoX) {
+					moveList[mhoX][mhoY] = Legend.RIGHT;
+					newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
+					newMap[mhoX+1][mhoY] = new Mho(mhoX+1, mhoY, board);
+				} else {
+					moveList[mhoX][mhoY] = Legend.LEFT;
+					newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
+					newMap[mhoX-1][mhoY-1] = new Mho(mhoX-1, mhoY, board);
+				}
+			}
+		}
+		
+		
+		//some more checks here
+		for (ListIterator<Integer> iterator = mhoLocations.listIterator(); iterator.hasNext();) {
+			int mhoX = iterator.next();
+			int mhoY = iterator.next();
+
+//			if (mhoX==playerX) {
+//				iterator.remove();
+//				iterator.previous();
+//				iterator.remove();
+//
+//
+//			}
+
+
 		}
 	}
 }
