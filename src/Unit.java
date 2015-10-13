@@ -69,11 +69,20 @@ public abstract class Unit{
 		//Height and width units are 1/12 of the board (keep as double for precision)
 		double widthUnit = getBoard().getWidth()/12.0;
 		double heightUnit = getBoard().getHeight()/12.0;
+		
+		if(getBoard().getWidth() > getBoard().getHeight()) {
+			heightUnit = getBoard().getHeight()/12.0;
+			widthUnit = getBoard().getHeight()/12.0;
+		} else if(getBoard().getWidth() < getBoard().getHeight()) {
+			heightUnit = getBoard().getWidth()/12.0;
+			widthUnit = getBoard().getWidth()/12.0;
+		}
+		
 
 		//If the board is not animating, simply return the standard x, y, and width
 		if (!board.isAnimating()) {
-			paintInfo[0] = (int)(widthUnit*getX());
-			paintInfo[1] = (int)(heightUnit*getY());
+			paintInfo[0] = (int)(widthUnit*getX()+(getBoard().getWidth()-widthUnit*12.0)/2.0);
+			paintInfo[1] = (int)(heightUnit*getY()+(getBoard().getHeight()-heightUnit*12.0)/2.0);
 			paintInfo[2] = (int) (widthUnit);
 			paintInfo[3] = (int) (heightUnit);
 		

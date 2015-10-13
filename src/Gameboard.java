@@ -11,10 +11,10 @@ import javax.swing.JPanel;
 public class Gameboard extends JPanel {
 
 	//The number of milliseconds per change in frame - lower means faster
-	public final int ANIMATION_SPEED = 100;
+	public final int ANIMATION_SPEED = 8;
 
 	//Number of frames in each animation - higher means a smoother animation, but will take longer
-	public final int ANIMATION_INTERVALS = 10;
+	public final int ANIMATION_INTERVALS = 50;
 
 	//The current frame that the animation is on
 	private int animationFrame = -1;
@@ -102,11 +102,22 @@ public class Gameboard extends JPanel {
 	public void paintBackground(Graphics g) {
 
 		g.setColor(Color.BLACK);
-
+		
+		double widthUnit = getWidth()/12.0;
+		double heightUnit = getHeight()/12.0;
+		
+		if(getWidth() > getHeight()) {
+			heightUnit = getHeight()/12.0;
+			widthUnit = getHeight()/12.0;
+		} else if(getWidth() < getHeight()) {
+			heightUnit = getWidth()/12.0;
+			widthUnit = getWidth()/12.0;
+		}
+		
 		//Loop in order to draw each line
-		for (int i = 1; i<12; i++) {
-			g.drawLine((int)(i*(getWidth()/12.0)), 0, (int)(i*(getWidth()/12.0)), getHeight());
-			g.drawLine(0, (int)(i*(getHeight()/12.0)), getWidth(), (int)(i*(getHeight()/12.0)));
+		for (int i = 0; i<13; i++) {
+			g.drawLine((int)(i*(widthUnit)+(getWidth()-widthUnit*12.0)/2.0), (int)((getHeight()-heightUnit*12.0)/2.0), (int)(i*(widthUnit)+(getWidth()-widthUnit*12.0)/2.0), (int)(heightUnit*12+(getHeight()-heightUnit*12.0)/2.0));
+			g.drawLine((int)((getWidth()-widthUnit*12.0)/2.0), (int)(i*(heightUnit)+(getHeight()-heightUnit*12.0)/2.0), (int)(widthUnit*12+(getWidth()-widthUnit*12.0)/2.0), (int)(i*(heightUnit)+(getHeight()-heightUnit*12.0)/2.0));
 		}
 
 	}

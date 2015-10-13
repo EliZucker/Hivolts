@@ -87,10 +87,25 @@ public class GameProcessor {
 		return moveList;
 	}
 
+	public void copyMap() {
+		for (int i = 0; i < 12; i++) {
+			for (int j = 0; j < 12; j++) {
+				if (map[i][j] instanceof Player) {
+					newMap[i][j] = new Player(i, j, board);
+				} else if (map[i][j] instanceof BlankSpace) {
+					newMap[i][j] = new BlankSpace(i, j, board);
+				} else if (map[i][j] instanceof Mho) {
+					newMap[i][j] = new Mho(i, j, board);
+				} else if (map[i][j] instanceof Fence) {
+					newMap[i][j] = new Fence(i, j, board);
+				}	
+			}
+		}
+	}
 
 	//called by gameboard when animating is done
 	public void animatingDone() {
-		map = newMap.clone();
+		map = newMap;
 	}
 
 	public int[] getPlayerLocation() {
@@ -145,26 +160,27 @@ public class GameProcessor {
 		int x = getPlayerLocation()[0];
 		int y = getPlayerLocation()[1];
 
-		if (map[x][y] instanceof Player)
-			if (map[x+xOffset][y+yOffset] instanceof BlankSpace) {
-				newMap[x][y] = new BlankSpace(x, y, board);
-				newMap[x+xOffset][y+yOffset] = new Player(x+xOffset, y+yOffset, board);
-				return true;
-			}
+
+		if (map[x+xOffset][y+yOffset] instanceof BlankSpace) {
+			newMap[x][y] = new BlankSpace(x, y, board);
+			newMap[x+xOffset][y+yOffset] = new Player(x+xOffset, y+yOffset, board);
+			moveList[getPlayerLocation()[0]][getPlayerLocation()[1]] = moveType;
+			return true;
+		}
+
 		return false;
 
 	}
 
 	public void playerMove(char move) {
+
+		for (int i = 0; i < 12; i++)
+			for (int j = 0; j < 12; j++)
+				moveList[i][j] = Legend.NO_MOVEMENT;
+
+		copyMap();
+
 		if(validPlayerMove(move)) {
-
-			newMap = map.clone();
-
-			for (int i = 0; i < 12; i++)
-				for (int j = 0; j < 12; j++)
-					moveList[i][j] = Legend.NO_MOVEMENT;
-
-			moveList[getPlayerLocation()[0]][getPlayerLocation()[1]] = move;
 
 			moveMhos();
 
@@ -221,20 +237,20 @@ public class GameProcessor {
 				}
 			}
 		}
-		
-		
+
+
 		//some more checks here
 		for (ListIterator<Integer> iterator = mhoLocations.listIterator(); iterator.hasNext();) {
 			int mhoX = iterator.next();
 			int mhoY = iterator.next();
 
-//			if (mhoX==playerX) {
-//				iterator.remove();
-//				iterator.previous();
-//				iterator.remove();
-//
-//
-//			}
+			//			if (mhoX==playerX) {
+			//				iterator.remove();
+			//				iterator.previous();
+			//				iterator.remove();
+			//
+			//
+			//			}
 
 
 		}
