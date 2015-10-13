@@ -13,7 +13,7 @@ import javax.print.DocFlavor.URL;
 import javax.swing.ImageIcon;
 
 
-public class Spike extends Unit {
+public class Fence extends Unit {
 	
 	/**
 	 * 
@@ -21,7 +21,7 @@ public class Spike extends Unit {
 	 * @param y the y coordinate of the placement on the board (0-11)
 	 * @param board the GameBoard object that the fence is being drawn on
 	 */
-	public Spike(int x, int y, Gameboard board) {
+	public Fence(int x, int y, Gameboard board) {
 		super(x, y, board);
 
 	}
