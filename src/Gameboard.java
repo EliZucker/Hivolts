@@ -34,6 +34,14 @@ public class Gameboard extends JPanel {
 
 
 	}
+	
+	/**
+	 * Called when the frame of animation has changed
+	 */
+	public void increaseAnimationFrame() {
+		animationFrame+=1;
+	}
+	
 
 	/**
 	 * Called whenever the state of animating has changed
@@ -123,11 +131,6 @@ public class Gameboard extends JPanel {
 	}
 
 	public void paintGameElements(Graphics g) {
-
-		//Adds one more frame to animationFrame if animating
-		if(isAnimating()) {
-			animationFrame+=1;
-		}
 
 		//Calls the paint method for each game element
 		for (int i = 0; i < 12; i++)

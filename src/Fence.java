@@ -37,19 +37,22 @@ public class Fence extends Unit {
 		int width = getPaintInfo()[2];
 		int height = getPaintInfo()[3];
 		
-		g.setColor(Color.RED);
+		g.setColor(Color.BLACK);
+		g.drawRect((int) (x+width/6.0 +getPadding()), y + getPadding(), (int) (width/6.0), height-(getPadding()*2));
+		g.drawRect(x+width-((int)(width/6.0 +getPadding()))-(int)(width/6.0), y + getPadding(), (int) (width/6.0), height-(getPadding()*2));
 		
-		g.fillPolygon(new int[]{(x+getPadding()), (int) (x+width/2.0+width/8.0),(int) (x+width/2.0-width/8.0)}, new int[]{(y+getPadding()),(int)(y+height/2.0-height/8.0), (int)(y+height/2.0+height/8.0)}, 3 );
-		g.fillPolygon(new int[]{(x+width-getPadding()), (int) (x+width/2.0-width/8.0),(int) (x+width/2.0+width/8.0)}, new int[]{(y+getPadding()),(int)(y+height/2.0-height/8.0), (int)(y+height/2.0+height/8.0)}, 3 );
-		g.fillPolygon(new int[]{(x+getPadding()), (int) (x+width/2.0-width/8.0),(int) (x+width/2.0+width/8.0)}, new int[]{(y+height-getPadding()),(int)(y+height/2.0-height/8.0), (int)(y+height/2.0+height/8.0)}, 3 );
-		g.fillPolygon(new int[]{(x+width-getPadding()), (int) (x+width/2.0+width/8.0),(int) (x+width/2.0-width/8.0)}, new int[]{(y+height-getPadding()),(int)(y+height/2.0-height/8.0), (int)(y+height/2.0+height/8.0)}, 3 );
+		g.setColor(new Color(92, 61, 16));
+		g.fillRect((int) (x+width/6.0 +getPadding()), y + getPadding(), (int) (width/6.0), height-(getPadding()*2));
+		g.fillRect(x+width-((int)(width/6.0 +getPadding()))-(int)(width/6.0), y + getPadding(), (int) (width/6.0), height-(getPadding()*2));
+		
+		g.setColor(new Color(128, 85, 22));
+		g.fillRect(x + getPadding(),(int) (y + getPadding()+height/6.0), width-(getPadding()*2), (int) (height/6.0));
+		g.fillRect(x + getPadding(),y+height-((int) (getPadding()+height/6.0))-(int) (height/6.0), width-(getPadding()*2), (int) (height/6.0));
 		
 		g.setColor(Color.BLACK);
-		g.drawPolygon(new int[]{(x+getPadding()), (int) (x+width/2.0+width/8.0),(int) (x+width/2.0-width/8.0)}, new int[]{(y+getPadding()),(int)(y+height/2.0-height/8.0), (int)(y+height/2.0+height/8.0)}, 3 );
-		g.drawPolygon(new int[]{(x+width-getPadding()), (int) (x+width/2.0-width/8.0),(int) (x+width/2.0+width/8.0)}, new int[]{(y+getPadding()),(int)(y+height/2.0-height/8.0), (int)(y+height/2.0+height/8.0)}, 3 );
-		g.drawPolygon(new int[]{(x+getPadding()), (int) (x+width/2.0-width/8.0),(int) (x+width/2.0+width/8.0)}, new int[]{(y+height-getPadding()),(int)(y+height/2.0-height/8.0), (int)(y+height/2.0+height/8.0)}, 3 );
-		g.drawPolygon(new int[]{(x+width-getPadding()), (int) (x+width/2.0+width/8.0),(int) (x+width/2.0-width/8.0)}, new int[]{(y+height-getPadding()),(int)(y+height/2.0-height/8.0), (int)(y+height/2.0+height/8.0)}, 3 );
-		//g.fillOval(x+width/4, y+height/4, width/2, height/2);
+		g.drawRect(x + getPadding(),(int) (y + getPadding()+height/6.0), width-(getPadding()*2), (int) (height/6.0));
+		g.drawRect(x + getPadding(),y+height-((int) (getPadding()+height/6.0))-(int) (height/6.0), width-(getPadding()*2), (int) (height/6.0));
+		
 	}
 
 }

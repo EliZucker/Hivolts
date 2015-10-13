@@ -22,6 +22,10 @@ public class Main {
 		//Keep redrawing the GameBoard infinitely, but only do at at an interval of ANIMATION_SPEED
 		while(true)
 		{
+			//Adds one more frame to animationFrame if animating
+			if(board.isAnimating()) {
+				board.increaseAnimationFrame();
+			}
 			board.repaint();
 			
 			try {
