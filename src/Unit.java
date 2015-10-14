@@ -78,102 +78,80 @@ public abstract class Unit{
 			widthUnit = getBoard().getWidth()/12.0;
 		}
 		
-
+		
 		//If the board is not animating, simply return the standard x, y, and width
-		if (!board.isAnimating()) {
 			paintInfo[0] = (int)(widthUnit*getX()+(getBoard().getWidth()-widthUnit*12.0)/2.0);
 			paintInfo[1] = (int)(heightUnit*getY()+(getBoard().getHeight()-heightUnit*12.0)/2.0);
 			paintInfo[2] = (int) (widthUnit);
 			paintInfo[3] = (int) (heightUnit);
 		
 		//If the board IS animating, a special algorithm will be determined for the type of movement
-		} else {
+			if (board.isAnimating()) {
+			
+			paintInfo[0] = (int)(widthUnit*getX()+(getBoard().getWidth()-widthUnit*12.0)/2.0);
+			paintInfo[1] = (int)(heightUnit*getY()+(getBoard().getHeight()-heightUnit*12.0)/2.0);
+			paintInfo[2] = (int) (widthUnit);
+			paintInfo[3] = (int) (heightUnit);
+			
 			//Obtain the moveType from the getMoveList() method of the GameBoard
 			char moveType = getBoard().getMoveList()[getX()][getY()];
-			
 			//Switch statement for each type of movement. There are slight nuances in the x, y, width, and height, corresponding to the type of movement
 			switch (moveType) {
 			case Legend.DOWN:
-
-				paintInfo[0] = (int)(widthUnit*getX());
-				paintInfo[1] = (int)(heightUnit*getY()+((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[2] = (int) (widthUnit);
-				paintInfo[3] = (int) (heightUnit);
+				paintInfo[1] += (int)(((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
 
 				break;
 
 			case Legend.RIGHT:
-				paintInfo[0] = (int)(widthUnit*getX()+((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[1] = (int)(heightUnit*getX());
-				paintInfo[2] = (int) (widthUnit);
-				paintInfo[3] = (int) (heightUnit);
+				paintInfo[0] += (int)(((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
 				break;
 
 			case Legend.UP:
-				paintInfo[0] = (int)(widthUnit*getX());
-				paintInfo[1] = (int)(heightUnit*getY()-((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[2] = (int) (widthUnit);
-				paintInfo[3] = (int) (heightUnit);
+				paintInfo[1] -= (int)(((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
 				break;
 
 			case Legend.LEFT:
-				paintInfo[0] = (int)(widthUnit*getX()-((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[1] = (int)(heightUnit*getX());
-				paintInfo[2] = (int) (widthUnit);
-				paintInfo[3] = (int) (heightUnit);
+				paintInfo[0] -= (int)(((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
 				break;
 
 			case Legend.DOWN_RIGHT:
-				paintInfo[0] = (int)(widthUnit*getX()+((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[1] = (int)(heightUnit*getY()+((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[2] = (int) (widthUnit);
-				paintInfo[3] = (int) (heightUnit);
+				paintInfo[0] += (int)(((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
+				paintInfo[1] += (int)(((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
 				break;
 
 			case Legend.DOWN_LEFT:
-				paintInfo[0] = (int)(widthUnit*getX()-((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[1] = (int)(heightUnit*getY()+((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[2] = (int) (widthUnit);
-				paintInfo[3] = (int) (heightUnit);
+				paintInfo[0] -= (int)(((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
+				paintInfo[1] += (int)(((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
 				break;
 
 			case Legend.UP_RIGHT:
-				paintInfo[0] = (int)(widthUnit*getX()+((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[1] = (int)(heightUnit*getY()-((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[2] = (int) (widthUnit);
-				paintInfo[3] = (int) (heightUnit);
+				paintInfo[0] += (int)(((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
+				paintInfo[1] -= (int)(((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
 				break;
 
 			case Legend.UP_LEFT:
-				paintInfo[0] = (int)(widthUnit*getX()-((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[1] = (int)(heightUnit*getY()-((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
-				paintInfo[2] = (int) (widthUnit);
-				paintInfo[3] = (int) (heightUnit);
+				paintInfo[0] -= (int)(((widthUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
+				paintInfo[1] -= (int)(((heightUnit/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
 				break;	
 
 			case Legend.SHRINK:
-				paintInfo[0] = (int)(widthUnit*getX()+((widthUnit/(board.ANIMATION_INTERVALS*2))*board.getAnimationFrame()));
-				paintInfo[1] = (int)(heightUnit*getY()+((heightUnit/(board.ANIMATION_INTERVALS*2))*board.getAnimationFrame()));
+				paintInfo[0] += (int)(((widthUnit/(board.ANIMATION_INTERVALS*2))*board.getAnimationFrame()));
+				paintInfo[1] += (int)(((heightUnit/(board.ANIMATION_INTERVALS*2))*board.getAnimationFrame()));
 				paintInfo[2] = (int) ((widthUnit/board.ANIMATION_INTERVALS)*(board.ANIMATION_INTERVALS-board.getAnimationFrame()));
 				paintInfo[3] = (int) ((heightUnit/board.ANIMATION_INTERVALS)*(board.ANIMATION_INTERVALS-board.getAnimationFrame()));
 				break;
 
 			case Legend.GROW:
-				paintInfo[0] = (int)(widthUnit*getX()+((widthUnit/(board.ANIMATION_INTERVALS*2))*(board.ANIMATION_INTERVALS-board.getAnimationFrame())));
-				paintInfo[1] = (int)(heightUnit*getY()+((heightUnit/(board.ANIMATION_INTERVALS*2))*(board.ANIMATION_INTERVALS-board.getAnimationFrame())));
+				paintInfo[0] += (int)(((widthUnit/(board.ANIMATION_INTERVALS*2))*(board.ANIMATION_INTERVALS-board.getAnimationFrame())));
+				paintInfo[1] += (int)(((heightUnit/(board.ANIMATION_INTERVALS*2))*(board.ANIMATION_INTERVALS-board.getAnimationFrame())));
 				paintInfo[2] = (int) ((widthUnit/board.ANIMATION_INTERVALS)*(board.getAnimationFrame()));
 				paintInfo[3] = (int) ((heightUnit/board.ANIMATION_INTERVALS)*(board.getAnimationFrame()));
 				break;
 
 			case Legend.NO_MOVEMENT:
-				paintInfo[0] = (int)(widthUnit*getX());
-				paintInfo[1] = (int)(heightUnit*getY());
-				paintInfo[2] = (int) (widthUnit);
-				paintInfo[3] = (int) (heightUnit);
 				break;
 			default:
 				break;
-
 			}
 		}
 		return paintInfo;
