@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 public class Gameboard extends JPanel {
 
 	//The number of milliseconds per change in frame - lower means faster
-	public final int ANIMATION_SPEED = 8;
+	public final int ANIMATION_SPEED = 100;
 
 	//Number of frames in each animation - higher means a smoother animation, but will take longer
 	public final int ANIMATION_INTERVALS = 50;
@@ -93,7 +93,7 @@ public class Gameboard extends JPanel {
 		super.paintComponent(g);
 
 		//Checks if animation is finished, then calls toggleAnimating() if true
-		if(animationFrame == ANIMATION_INTERVALS) 
+		if(animationFrame >= ANIMATION_INTERVALS) 
 			toggleAnimating();
 
 		//Paint the background and game elements
