@@ -14,6 +14,8 @@ public class GameProcessor {
 	private int[] newPlayerLocation = new int[2];
 	private ArrayList<Integer> mhoLocations = new ArrayList<Integer>();
 
+	private boolean gameOver = false;
+	
 	public GameProcessor(Gameboard board) {
 		this.board=board;
 		generateMap();
@@ -144,6 +146,8 @@ public class GameProcessor {
 
 	private void gameOver() {
 		//still needs to be implemeneted
+		//
+		gameOver=true;
 		System.out.println("GAME OVER!");
 	}
 
@@ -214,6 +218,9 @@ public class GameProcessor {
 
 		}
 		else {
+			moveList[getPlayerLocation()[0]][getPlayerLocation()[1]] = Legend.SHRINK;
+			newMap[getPlayerLocation()[0]][getPlayerLocation()[1]] = new BlankSpace(getPlayerLocation()[0],getPlayerLocation()[1], board);
+			board.toggleAnimating();
 			gameOver();
 		}
 	}
@@ -249,6 +256,9 @@ public class GameProcessor {
 					if(map[mhoX][mhoY+1] instanceof Fence) {
 						moveList[mhoX][mhoY] = Legend.SHRINK;
 					} else {
+						if(newMap[mhoX][mhoY+1] instanceof Player) {
+							gameOver();
+						}
 						newMap[mhoX][mhoY+1] = new Mho(mhoX, mhoY+1, board);
 					}
 
@@ -259,6 +269,9 @@ public class GameProcessor {
 					if(map[mhoX][mhoY-1] instanceof Fence) {
 						moveList[mhoX][mhoY] = Legend.SHRINK;
 					} else {
+						if(newMap[mhoX][mhoY-1] instanceof Player) {
+							gameOver();
+						}
 						newMap[mhoX][mhoY-1] = new Mho(mhoX, mhoY-1, board);
 					}
 				}
@@ -274,6 +287,9 @@ public class GameProcessor {
 					if(map[mhoX+1][mhoY] instanceof Fence) {
 						moveList[mhoX][mhoY] = Legend.SHRINK;
 					} else {
+						if(newMap[mhoX+1][mhoY] instanceof Player) {
+							gameOver();
+						}
 						newMap[mhoX+1][mhoY] = new Mho(mhoX+1, mhoY, board);
 					}
 				} else {
@@ -283,6 +299,9 @@ public class GameProcessor {
 					if(map[mhoX-1][mhoY] instanceof Fence) {
 						moveList[mhoX][mhoY] = Legend.SHRINK;
 					} else {
+						if(newMap[mhoX-1][mhoY] instanceof Player) {
+							gameOver();
+						}
 						newMap[mhoX-1][mhoY] = new Mho(mhoX-1, mhoY, board);
 					}
 				}
@@ -325,6 +344,11 @@ public class GameProcessor {
 
 			if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace) {
 				newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
+				
+				if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
+					gameOver();
+				}
+				
 				newMap[mhoX+xOffset][mhoY+yOffset] = new Mho(mhoX+xOffset, mhoY+yOffset, board);
 				moveList[mhoX][mhoY] = move;
 				mhoLocations.remove(i*2+1);
