@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 public class Gameboard extends JPanel {
 
 	//The number of milliseconds per change in frame - lower means faster
-	public final int ANIMATION_SPEED = 30;
+	public final int ANIMATION_SPEED = 8;
 
 	//Number of frames in each animation - higher means a smoother animation, but will take longer
 	public final int ANIMATION_INTERVALS = 100;
@@ -23,16 +23,20 @@ public class Gameboard extends JPanel {
 	private boolean animating = false;
 
 	//The GameProcessor object. This object will do all of the move processing behind the scenes
-	GameProcessor gameProcessor;
+	private GameProcessor gameProcessor;
 
 	public Gameboard() {
 		//Set the default size
 		setPreferredSize(new Dimension(700,700));
-
+		
 		//instantiates the GameProcessor object
 		gameProcessor = new GameProcessor(this);
 
 
+	}
+	
+	public GameProcessor getGameProcessor() {
+		return gameProcessor;
 	}
 	
 	/**

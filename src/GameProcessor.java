@@ -19,7 +19,6 @@ public class GameProcessor {
 	public GameProcessor(Gameboard board) {
 		this.board=board;
 		generateMap();
-		playerMove(Legend.NO_MOVEMENT);
 	}
 
 	public void generateMap() {
@@ -126,6 +125,7 @@ public class GameProcessor {
 	//called by gameboard when animating is done
 	public void animatingDone() {
 		updateMap();
+		setPlayerLocation(getNewPlayerLocation());
 		if(gameOver) {
 			System.out.println("GAME OVER!");
 			//Restart Screen
