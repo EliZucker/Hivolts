@@ -19,7 +19,7 @@ public class GameProcessor {
 	public GameProcessor(Gameboard board) {
 		this.board=board;
 		generateMap();
-		playerMove(Legend.RIGHT);
+		playerMove(Legend.NO_MOVEMENT);
 	}
 
 	public void generateMap() {
@@ -126,6 +126,10 @@ public class GameProcessor {
 	//called by gameboard when animating is done
 	public void animatingDone() {
 		updateMap();
+		if(gameOver) {
+			System.out.println("GAME OVER!");
+			//Restart Screen
+		}
 	}
 
 	public int[] getPlayerLocation() {
@@ -145,10 +149,7 @@ public class GameProcessor {
 	}
 
 	private void gameOver() {
-		//still needs to be implemeneted
-		//
 		gameOver=true;
-		System.out.println("GAME OVER!");
 	}
 
 	private boolean validPlayerMove(char moveType) {
@@ -190,7 +191,7 @@ public class GameProcessor {
 		int y = getPlayerLocation()[1];
 
 
-		if (map[x+xOffset][y+yOffset] instanceof BlankSpace) {
+		if (map[x+xOffset][y+yOffset] instanceof BlankSpace || map[x+xOffset][y+yOffset] instanceof Player) {
 			newMap[x][y] = new BlankSpace(x, y, board);
 			newMap[x+xOffset][y+yOffset] = new Player(x+xOffset, y+yOffset, board);
 			moveList[x][y] = moveType;
@@ -232,89 +233,70 @@ public class GameProcessor {
 	public void moveMhos() {
 		moveAllignedMhos();
 		moveDiagonalMhos();
+		moveHorizontalMhos();
+		moveVerticalMhos();
+		moveRemainingMhos();
 	}
 	
 	public void moveAllignedMhos() {
 
 		int playerX = getNewPlayerLocation()[0];
 		int playerY = getNewPlayerLocation()[1];
+		
+		for(int i = 0; i < mhoLocations.size()/2; i++) {
+			int mhoX = mhoLocations.get(i*2);
+			int mhoY = mhoLocations.get(i*2+1);
 
-		//Check if any mhos are perfectly vertically or horizontally alligned
-		for (ListIterator<Integer> iterator = mhoLocations.listIterator(); iterator.hasNext();) {
-			int mhoX = iterator.next();
-			int mhoY = iterator.next();
+			int xOffset = 0;
+			int yOffset = 0;
+			char move = Legend.NO_MOVEMENT;
 
-			if (mhoX==playerX) {
-				iterator.remove();
-				iterator.previous();
-				iterator.remove();
-
-				if (playerY>mhoY) {
-					moveList[mhoX][mhoY] = Legend.DOWN;
-					newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
-
-					if(map[mhoX][mhoY+1] instanceof Fence) {
-						moveList[mhoX][mhoY] = Legend.SHRINK;
-					} else {
-						if(newMap[mhoX][mhoY+1] instanceof Player) {
-							gameOver();
-						}
-						newMap[mhoX][mhoY+1] = new Mho(mhoX, mhoY+1, board);
-					}
-
+			if(playerX == mhoX) {
+				if(playerY > mhoY) {
+					yOffset = 1;
+					move = Legend.DOWN;
 				} else {
-					moveList[mhoX][mhoY] = Legend.UP;
-					newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
-
-					if(map[mhoX][mhoY-1] instanceof Fence) {
-						moveList[mhoX][mhoY] = Legend.SHRINK;
-					} else {
-						if(newMap[mhoX][mhoY-1] instanceof Player) {
-							gameOver();
-						}
-						newMap[mhoX][mhoY-1] = new Mho(mhoX, mhoY-1, board);
-					}
+					yOffset = -1;
+					move = Legend.UP;
 				}
-			} else if (mhoY==playerY) {
-				iterator.remove();
-				iterator.previous();
-				iterator.remove();
-
-				if (playerX>mhoX) {
-					moveList[mhoX][mhoY] = Legend.RIGHT;
-					newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
-
-					if(map[mhoX+1][mhoY] instanceof Fence) {
-						moveList[mhoX][mhoY] = Legend.SHRINK;
-					} else {
-						if(newMap[mhoX+1][mhoY] instanceof Player) {
-							gameOver();
-						}
-						newMap[mhoX+1][mhoY] = new Mho(mhoX+1, mhoY, board);
-					}
+			} else if(playerY == mhoY) {
+				if(playerX > mhoX) {
+					xOffset = 1;
+					move = Legend.RIGHT;
 				} else {
-					moveList[mhoX][mhoY] = Legend.LEFT;
-					newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
-
-					if(map[mhoX-1][mhoY] instanceof Fence) {
-						moveList[mhoX][mhoY] = Legend.SHRINK;
-					} else {
-						if(newMap[mhoX-1][mhoY] instanceof Player) {
-							gameOver();
-						}
-						newMap[mhoX-1][mhoY] = new Mho(mhoX-1, mhoY, board);
-					}
+					xOffset = -1;
+					move = Legend.LEFT;
 				}
 			}
+			
+			if(!(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Mho)) {
+				newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
+				
+				if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
+					gameOver();
+				}
+				if(!(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Fence)) {
+					newMap[mhoX+xOffset][mhoY+yOffset] = new Mho(mhoX+xOffset, mhoY+yOffset, board);
+				} else {
+					move = Legend.SHRINK;
+				}
+				moveList[mhoX][mhoY] = move;
+				mhoLocations.remove(i*2+1);
+				mhoLocations.remove(i*2);
+				moveAllignedMhos();
+				break;
+			}
 		}
+		return;
 	}
 
 	public void moveDiagonalMhos() {
-		for(int i = 0; i < mhoLocations.size()/2-1; i++) {
+		int playerX = getNewPlayerLocation()[0];
+		int playerY = getNewPlayerLocation()[1];
+		
+		for(int i = 0; i < mhoLocations.size()/2; i++) {
 			int mhoX = mhoLocations.get(i*2);
 			int mhoY = mhoLocations.get(i*2+1);
-			int playerX = getNewPlayerLocation()[0];
-			int playerY = getNewPlayerLocation()[1];
 
 			int xOffset = 0;
 			int yOffset = 0;
@@ -342,7 +324,7 @@ public class GameProcessor {
 				}
 			}
 
-			if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace) {
+			if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace || newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
 				newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
 				
 				if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
@@ -354,6 +336,108 @@ public class GameProcessor {
 				mhoLocations.remove(i*2+1);
 				mhoLocations.remove(i*2);
 				moveDiagonalMhos();
+				break;
+			}
+		}
+		return;
+	}
+	
+	public void moveHorizontalMhos() {
+		int playerX = getNewPlayerLocation()[0];
+		int playerY = getNewPlayerLocation()[1];
+		
+		for(int i = 0; i < mhoLocations.size()/2; i++) {
+			int mhoX = mhoLocations.get(i*2);
+			int mhoY = mhoLocations.get(i*2+1);
+
+			int xOffset = 0;
+			int yOffset = 0;
+			char move = Legend.NO_MOVEMENT;
+			
+			if((Math.abs(playerX-mhoX))>=(Math.abs(playerY-mhoY))) {
+				if(playerX > mhoX) {
+					xOffset = 1;
+					move = Legend.RIGHT;
+				} else {
+					xOffset = -1;
+					move = Legend.LEFT;
+				}
+			}
+
+			if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace || newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace) {
+				
+				if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
+					gameOver();
+				}
+				
+				newMap[mhoX+xOffset][mhoY+yOffset] = new Mho(mhoX+xOffset, mhoY+yOffset, board);
+				moveList[mhoX][mhoY] = move;
+				newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
+				mhoLocations.remove(i*2+1);
+				mhoLocations.remove(i*2);
+				moveHorizontalMhos();
+				break;
+			} 
+		}
+		return;
+	}
+	
+	public void moveVerticalMhos() {
+		int playerX = getNewPlayerLocation()[0];
+		int playerY = getNewPlayerLocation()[1];
+		
+		for(int i = 0; i < mhoLocations.size()/2; i++) {
+			int mhoX = mhoLocations.get(i*2);
+			int mhoY = mhoLocations.get(i*2+1);
+
+			int xOffset = 0;
+			int yOffset = 0;
+			char move = Legend.NO_MOVEMENT;
+			
+			
+			if((Math.abs(playerX-mhoX))<=(Math.abs(playerY-mhoY))) {
+				if(playerY > mhoY) {
+					yOffset = 1;
+					move = Legend.DOWN;
+				} else {
+					yOffset = -1;
+					move = Legend.UP;
+				}
+			}
+
+			if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace || newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace) {
+				newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
+				
+				if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
+					gameOver();
+				}
+				
+				moveList[mhoX][mhoY] = move;
+				newMap[mhoX+xOffset][mhoY+yOffset] = new Mho(mhoX+xOffset, mhoY+yOffset, board);
+				mhoLocations.remove(i*2+1);
+				mhoLocations.remove(i*2);
+				moveVerticalMhos();
+				break;
+			} 
+		}
+		return;
+	}
+	
+	public void moveRemainingMhos() {
+		for(int i = 0; i < mhoLocations.size()/2; i++) {
+			int mhoX = mhoLocations.get(i*2);
+			int mhoY = mhoLocations.get(i*2+1);
+			
+			boolean fenceNear = false;
+			
+			if(newMap[mhoX][mhoY+1] instanceof Fence || newMap[mhoX][mhoY-1] instanceof Fence || newMap[mhoX-1][mhoY] instanceof Fence || newMap[mhoX-1][mhoY+1] instanceof Fence || newMap[mhoX-1][mhoY-1] instanceof Fence || newMap[mhoX+1][mhoY] instanceof Fence || newMap[mhoX+1][mhoY+1] instanceof Fence || newMap[mhoX+1][mhoY-1] instanceof Fence)
+				fenceNear = true;
+			if(fenceNear) {
+				newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
+				moveList[mhoX][mhoY] = Legend.SHRINK;
+				mhoLocations.remove(i*2+1);
+				mhoLocations.remove(i*2);
+				moveRemainingMhos();
 				break;
 			}
 		}

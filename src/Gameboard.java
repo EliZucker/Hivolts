@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 public class Gameboard extends JPanel {
 
 	//The number of milliseconds per change in frame - lower means faster
-	public final int ANIMATION_SPEED = 8;
+	public final int ANIMATION_SPEED = 30;
 
 	//Number of frames in each animation - higher means a smoother animation, but will take longer
 	public final int ANIMATION_INTERVALS = 100;
@@ -140,7 +140,12 @@ public class Gameboard extends JPanel {
 		
 		for (int i = 0; i < 12; i++)
 			for (int j = 0; j < 12; j++) 
-				if (!(gameProcessor.getMap()[i][j] instanceof Fence))
+				if (gameProcessor.getMap()[i][j] instanceof Player)
+					gameProcessor.getMap()[i][j].paint(g);
+		
+		for (int i = 0; i < 12; i++)
+			for (int j = 0; j < 12; j++) 
+				if (gameProcessor.getMap()[i][j] instanceof Mho)
 					gameProcessor.getMap()[i][j].paint(g);
 	}
 }
