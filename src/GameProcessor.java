@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
 
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 
 
 public class GameProcessor {
@@ -15,6 +18,7 @@ public class GameProcessor {
 	private ArrayList<Integer> mhoLocations = new ArrayList<Integer>();
 
 	public boolean gameOver = false;
+	public boolean win = false;
 
 	public GameProcessor(Gameboard board) {
 		this.board=board;
@@ -127,8 +131,15 @@ public class GameProcessor {
 		updateMap();
 		setPlayerLocation(getNewPlayerLocation());
 		if(gameOver) {
-			System.out.println("GAME OVER!");
-			//Restart Screen
+			if(win) {
+				Main.showEndMessage(1, 0);
+			} else {
+				if (newMap[getNewPlayerLocation()[0]][getPlayerLocation()[1]] instanceof Mho) {
+					Main.showEndMessage(-1, -1);
+				} else {
+					Main.showEndMessage(-1, 1);
+				}
+			}
 		}
 	}
 
@@ -136,7 +147,7 @@ public class GameProcessor {
 		mhoLocations.clear();
 		for (int i = 1; i < 11; i++)
 			for (int j = 1; j < 11; j++) 
-				if(map[i][j] instanceof Mho) {
+				if(newMap[i][j] instanceof Mho) {
 					mhoLocations.add(i);
 					mhoLocations.add(j);
 				}
@@ -163,6 +174,9 @@ public class GameProcessor {
 	}
 
 	private void validPlayerMove(char moveType) {
+		int x = getPlayerLocation()[0];
+		int y = getPlayerLocation()[1];
+
 		int xOffset = 0;
 		int yOffset = 0;
 
@@ -195,11 +209,30 @@ public class GameProcessor {
 		case Legend.RIGHT:
 			xOffset = 1;
 			break;
+		case Legend.JUMP:
+			while (true) {
+				int randomX = 1+(int)(Math.random()*10);
+				int randomY = 1+(int)(Math.random()*10);
+
+				if(map[randomX][randomY] instanceof BlankSpace) {
+					newMap[randomX][randomY] = new Player(x, y, board);
+					newMap[x][y] = new BlankSpace(x, y, board);
+					moveList[x][y] = moveType;
+					map[x][y].setJumpLocation(randomX, randomY);
+					setNewPlayerLocation(new int[] {randomX, randomY});
+					break;
+				} else if(map[randomX][randomY] instanceof Mho) {
+					newMap[randomX][randomY] = new Mho(x, y, board);
+					newMap[x][y] = new BlankSpace(x, y, board);
+					moveList[x][y] = moveType;
+					map[x][y].setJumpLocation(randomX, randomY);
+					setNewPlayerLocation(new int[] {randomX, randomY});
+					gameOver();
+					break;
+				}
+			}
+			return;
 		}
-
-		int x = getPlayerLocation()[0];
-		int y = getPlayerLocation()[1];
-
 
 		if (map[x+xOffset][y+yOffset] instanceof BlankSpace || map[x+xOffset][y+yOffset] instanceof Player) {
 			newMap[x][y] = new BlankSpace(x, y, board);
@@ -224,9 +257,15 @@ public class GameProcessor {
 				moveList[i][j] = Legend.NO_MOVEMENT;
 
 		copyMap();
-		updateMhoLocationList();
 		validPlayerMove(move);
-		moveMhos();
+		if(move != Legend.JUMP)
+			moveMhos();
+
+		if(mhoLocations.size() == 0) {
+			gameOver();
+			win = true;
+		}
+
 		board.toggleAnimating();
 	}
 
@@ -240,6 +279,7 @@ public class GameProcessor {
 		moveHorizontalMhos();
 		moveVerticalMhos();
 		moveRemainingMhos();
+		updateMhoLocationList();
 	}
 
 	private void moveAllignedMhos() {

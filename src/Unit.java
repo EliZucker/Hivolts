@@ -4,6 +4,8 @@ import java.awt.Graphics;
 public abstract class Unit{
 	private int x;
 	private int y;
+	private int jumpX;
+	private int jumpY;
 	private final int PADDING = 4;
 	private Gameboard board;
 
@@ -17,6 +19,11 @@ public abstract class Unit{
 		this.x = x;
 		this.y = y;
 		this.board = board;
+	}
+	
+	public void setJumpLocation(int x, int y) {
+		jumpX = x;
+		jumpY = y;
 	}
 
 	/**
@@ -147,9 +154,18 @@ public abstract class Unit{
 				paintInfo[2] = (int) ((widthUnit/board.ANIMATION_INTERVALS)*(board.getAnimationFrame()));
 				paintInfo[3] = (int) ((heightUnit/board.ANIMATION_INTERVALS)*(board.getAnimationFrame()));
 				break;
+				
+			case Legend.JUMP:
+				double xDifference = jumpX-x;
+				double yDifference = jumpY-y;
+				
+				paintInfo[0] += (int)((((xDifference*widthUnit)/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
+				paintInfo[1] += (int)((((yDifference*heightUnit)/board.ANIMATION_INTERVALS)*board.getAnimationFrame()));
+				break;
 
 			case Legend.NO_MOVEMENT:
 				break;
+				
 			default:
 				break;
 			}

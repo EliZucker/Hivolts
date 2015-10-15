@@ -19,5 +19,6 @@ public final class Legend {
 	public static final char UP_LEFT = 8;
 	public static final char SHRINK = 9;
 	public static final char GROW = 10;
+	public static final char JUMP = 11;
 
 }

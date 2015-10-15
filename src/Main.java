@@ -10,12 +10,16 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 public class Main {
+	private final static String TITLE = "Hivolts Recreation - Eli Zucker";
 	public static void main(String[] args) {
 		//create a JFrame window to house our FlagPanel object
 		JFrame win = new JFrame();
+		win.setTitle(TITLE);
 		win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		win.setLayout(new BorderLayout());
 		win.setMinimumSize(new Dimension(100,150));
@@ -23,19 +27,76 @@ public class Main {
 		//add the GameBoard
 		Gameboard board = new Gameboard();
 		win.add(board, BorderLayout.CENTER);
-		board.requestDefaultFocus();
+		
 		board.requestFocus();
 		board.requestFocusInWindow();
 		board.setFocusable(true);
 		
+		addKeyListener(board);
+
+		//pack everything inside the frame and make it visible
+		win.pack();
+		win.setVisible(true);
+		
+		//Keep redrawing the GameBoard infinitely, but only do at at an interval of ANIMATION_SPEED
+		while(true)
+		{
+			//Adds one more frame to animationFrame if animating
+			if(board.isAnimating()) {
+				board.increaseAnimationFrame();
+			}
+			board.repaint();
+
+			try {
+				Thread.sleep(board.ANIMATION_SPEED);
+			} catch(InterruptedException e){
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void showEndMessage(int status, int reason) {
+		String gameMessage ;
+		if(status == 1) {
+			gameMessage = "Congratulations! You Won!";
+		} else {
+
+			if (reason == -1) {
+				gameMessage = "Game Over! You were eaten by a Mho";
+			} else {
+				gameMessage = "Game Over! You landed on a Fence";
+			}
+		} 
+
+		Object[] buttons = {"Restart",
+		"Quit"};
+
+		int value = JOptionPane.showOptionDialog(
+				null, 
+				gameMessage,
+				TITLE, 
+				JOptionPane.YES_NO_OPTION, 
+				JOptionPane.QUESTION_MESSAGE, 
+				null, 
+				buttons, 
+				buttons[0]);
+
+		if (value == 0) {
+			//restart
+		} else {
+			System.exit(0);
+		}
+	}
+
+	private static void addKeyListener(Gameboard board) {
 		board.addKeyListener(new KeyListener(){
-			
+
 			@Override
 			public void keyPressed(KeyEvent e) {
-				
+
 				if(board.isAnimating() || board.getGameProcessor().gameOver)
 					return;
-		
+
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_DOWN:
 					board.getGameProcessor().playerMove(Legend.DOWN);
@@ -77,7 +138,7 @@ public class Main {
 					board.getGameProcessor().playerMove(Legend.DOWN_RIGHT);
 					break;
 				case KeyEvent.VK_J:
-					//still needs to be implemented
+					board.getGameProcessor().playerMove(Legend.JUMP);
 					break;
 				}
 			}
@@ -89,27 +150,7 @@ public class Main {
 			@Override
 			public void keyTyped(KeyEvent e) {
 			}
-					
-			});
 
-		//pack everything inside the frame and make it visible
-		win.pack();
-		win.setVisible(true);
-
-		//Keep redrawing the GameBoard infinitely, but only do at at an interval of ANIMATION_SPEED
-		while(true)
-		{
-			//Adds one more frame to animationFrame if animating
-			if(board.isAnimating()) {
-				board.increaseAnimationFrame();
-			}
-			board.repaint();
-
-			try {
-				Thread.sleep(board.ANIMATION_SPEED);
-			} catch(InterruptedException e){
-				e.printStackTrace();
-			}
-		}
+		});
 	}
 }
