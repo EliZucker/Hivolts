@@ -14,14 +14,14 @@ public class GameProcessor {
 	private int[] newPlayerLocation = new int[2];
 	private ArrayList<Integer> mhoLocations = new ArrayList<Integer>();
 
-	private boolean gameOver = false;
-	
+	public boolean gameOver = false;
+
 	public GameProcessor(Gameboard board) {
 		this.board=board;
 		generateMap();
 	}
 
-	public void generateMap() {
+	private void generateMap() {
 
 		boolean[][] spaceUsed = new boolean[12][12];
 		int fencesGenerated = 0;
@@ -90,7 +90,7 @@ public class GameProcessor {
 		return moveList;
 	}
 
-	public void copyMap() {
+	private void copyMap() {
 		for (int i = 0; i < 12; i++) {
 			for (int j = 0; j < 12; j++) {
 				if (map[i][j] instanceof Player) {
@@ -105,8 +105,8 @@ public class GameProcessor {
 			}
 		}
 	}
-	
-	public void updateMap() {
+
+	private void updateMap() {
 		for (int i = 0; i < 12; i++) {
 			for (int j = 0; j < 12; j++) {
 				if (newMap[i][j] instanceof Player) {
@@ -132,10 +132,20 @@ public class GameProcessor {
 		}
 	}
 
+	private void updateMhoLocationList() {
+		mhoLocations.clear();
+		for (int i = 1; i < 11; i++)
+			for (int j = 1; j < 11; j++) 
+				if(map[i][j] instanceof Mho) {
+					mhoLocations.add(i);
+					mhoLocations.add(j);
+				}
+	}
+
 	public int[] getPlayerLocation() {
 		return playerLocation;
 	}
-	
+
 	public int[] getNewPlayerLocation() {
 		return newPlayerLocation;
 	}
@@ -143,7 +153,7 @@ public class GameProcessor {
 	public void setPlayerLocation(int[] playerLocation) {
 		this.playerLocation = playerLocation;
 	}
-	
+
 	public void setNewPlayerLocation(int[] playerLocation) {
 		this.newPlayerLocation = playerLocation;
 	}
@@ -152,7 +162,7 @@ public class GameProcessor {
 		gameOver=true;
 	}
 
-	private boolean validPlayerMove(char moveType) {
+	private void validPlayerMove(char moveType) {
 		int xOffset = 0;
 		int yOffset = 0;
 
@@ -196,10 +206,14 @@ public class GameProcessor {
 			newMap[x+xOffset][y+yOffset] = new Player(x+xOffset, y+yOffset, board);
 			moveList[x][y] = moveType;
 			setNewPlayerLocation(new int[] {x+xOffset, y+yOffset});
-			return true;
+			return;
+		} else {
+			newMap[x][y] = new BlankSpace(x, y, board);
+			moveList[x][y] = Legend.SHRINK;
+			setNewPlayerLocation(new int[] {x, y});
+			gameOver();
+			return;
 		}
-
-		return false;
 
 	}
 
@@ -210,39 +224,29 @@ public class GameProcessor {
 				moveList[i][j] = Legend.NO_MOVEMENT;
 
 		copyMap();
-
-		if(validPlayerMove(move)) {
-
-			moveMhos();
-
-			board.toggleAnimating();
-
-		}
-		else {
-			moveList[getPlayerLocation()[0]][getPlayerLocation()[1]] = Legend.SHRINK;
-			newMap[getPlayerLocation()[0]][getPlayerLocation()[1]] = new BlankSpace(getPlayerLocation()[0],getPlayerLocation()[1], board);
-			board.toggleAnimating();
-			gameOver();
-		}
+		updateMhoLocationList();
+		validPlayerMove(move);
+		moveMhos();
+		board.toggleAnimating();
 	}
 
-	public void jump() {
+	private void jump() {
 
 	}
-	
-	public void moveMhos() {
+
+	private void moveMhos() {
 		moveAllignedMhos();
 		moveDiagonalMhos();
 		moveHorizontalMhos();
 		moveVerticalMhos();
 		moveRemainingMhos();
 	}
-	
-	public void moveAllignedMhos() {
+
+	private void moveAllignedMhos() {
 
 		int playerX = getNewPlayerLocation()[0];
 		int playerY = getNewPlayerLocation()[1];
-		
+
 		for(int i = 0; i < mhoLocations.size()/2; i++) {
 			int mhoX = mhoLocations.get(i*2);
 			int mhoY = mhoLocations.get(i*2+1);
@@ -268,11 +272,13 @@ public class GameProcessor {
 					move = Legend.LEFT;
 				}
 			}
-			
+
 			if(!(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Mho)) {
 				newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
-				
+
 				if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
+					if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player)
+						moveList[mhoX+xOffset][mhoY+yOffset] = Legend.SHRINK;
 					gameOver();
 				}
 				if(!(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Fence)) {
@@ -290,10 +296,10 @@ public class GameProcessor {
 		return;
 	}
 
-	public void moveDiagonalMhos() {
+	private void moveDiagonalMhos() {
 		int playerX = getNewPlayerLocation()[0];
 		int playerY = getNewPlayerLocation()[1];
-		
+
 		for(int i = 0; i < mhoLocations.size()/2; i++) {
 			int mhoX = mhoLocations.get(i*2);
 			int mhoY = mhoLocations.get(i*2+1);
@@ -326,11 +332,13 @@ public class GameProcessor {
 
 			if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace || newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
 				newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
-				
+
 				if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
+					if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player)
+						moveList[mhoX+xOffset][mhoY+yOffset] = Legend.SHRINK;
 					gameOver();
 				}
-				
+
 				newMap[mhoX+xOffset][mhoY+yOffset] = new Mho(mhoX+xOffset, mhoY+yOffset, board);
 				moveList[mhoX][mhoY] = move;
 				mhoLocations.remove(i*2+1);
@@ -341,11 +349,11 @@ public class GameProcessor {
 		}
 		return;
 	}
-	
-	public void moveHorizontalMhos() {
+
+	private void moveHorizontalMhos() {
 		int playerX = getNewPlayerLocation()[0];
 		int playerY = getNewPlayerLocation()[1];
-		
+
 		for(int i = 0; i < mhoLocations.size()/2; i++) {
 			int mhoX = mhoLocations.get(i*2);
 			int mhoY = mhoLocations.get(i*2+1);
@@ -353,7 +361,7 @@ public class GameProcessor {
 			int xOffset = 0;
 			int yOffset = 0;
 			char move = Legend.NO_MOVEMENT;
-			
+
 			if((Math.abs(playerX-mhoX))>=(Math.abs(playerY-mhoY))) {
 				if(playerX > mhoX) {
 					xOffset = 1;
@@ -365,11 +373,13 @@ public class GameProcessor {
 			}
 
 			if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace || newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace) {
-				
+
 				if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
+					if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player)
+						moveList[mhoX+xOffset][mhoY+yOffset] = Legend.SHRINK;
 					gameOver();
 				}
-				
+
 				newMap[mhoX+xOffset][mhoY+yOffset] = new Mho(mhoX+xOffset, mhoY+yOffset, board);
 				moveList[mhoX][mhoY] = move;
 				newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
@@ -381,11 +391,11 @@ public class GameProcessor {
 		}
 		return;
 	}
-	
-	public void moveVerticalMhos() {
+
+	private void moveVerticalMhos() {
 		int playerX = getNewPlayerLocation()[0];
 		int playerY = getNewPlayerLocation()[1];
-		
+
 		for(int i = 0; i < mhoLocations.size()/2; i++) {
 			int mhoX = mhoLocations.get(i*2);
 			int mhoY = mhoLocations.get(i*2+1);
@@ -393,8 +403,8 @@ public class GameProcessor {
 			int xOffset = 0;
 			int yOffset = 0;
 			char move = Legend.NO_MOVEMENT;
-			
-			
+
+
 			if((Math.abs(playerX-mhoX))<=(Math.abs(playerY-mhoY))) {
 				if(playerY > mhoY) {
 					yOffset = 1;
@@ -407,11 +417,13 @@ public class GameProcessor {
 
 			if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace || newMap[mhoX+xOffset][mhoY+yOffset] instanceof BlankSpace) {
 				newMap[mhoX][mhoY] = new BlankSpace(mhoX, mhoY, board);
-				
+
 				if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player) {
+					if(newMap[mhoX+xOffset][mhoY+yOffset] instanceof Player)
+						moveList[mhoX+xOffset][mhoY+yOffset] = Legend.SHRINK;
 					gameOver();
 				}
-				
+
 				moveList[mhoX][mhoY] = move;
 				newMap[mhoX+xOffset][mhoY+yOffset] = new Mho(mhoX+xOffset, mhoY+yOffset, board);
 				mhoLocations.remove(i*2+1);
@@ -422,14 +434,14 @@ public class GameProcessor {
 		}
 		return;
 	}
-	
-	public void moveRemainingMhos() {
+
+	private void moveRemainingMhos() {
 		for(int i = 0; i < mhoLocations.size()/2; i++) {
 			int mhoX = mhoLocations.get(i*2);
 			int mhoY = mhoLocations.get(i*2+1);
-			
+
 			boolean fenceNear = false;
-			
+
 			if(newMap[mhoX][mhoY+1] instanceof Fence || newMap[mhoX][mhoY-1] instanceof Fence || newMap[mhoX-1][mhoY] instanceof Fence || newMap[mhoX-1][mhoY+1] instanceof Fence || newMap[mhoX-1][mhoY-1] instanceof Fence || newMap[mhoX+1][mhoY] instanceof Fence || newMap[mhoX+1][mhoY+1] instanceof Fence || newMap[mhoX+1][mhoY-1] instanceof Fence)
 				fenceNear = true;
 			if(fenceNear) {

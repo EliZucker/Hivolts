@@ -29,8 +29,57 @@ public class Main {
 		board.setFocusable(true);
 		
 		board.addKeyListener(new KeyListener(){
+			
 			@Override
 			public void keyPressed(KeyEvent e) {
+				
+				if(board.isAnimating() || board.getGameProcessor().gameOver)
+					return;
+		
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_DOWN:
+					board.getGameProcessor().playerMove(Legend.DOWN);
+					break;
+				case KeyEvent.VK_UP:
+					board.getGameProcessor().playerMove(Legend.UP);
+					break;
+				case KeyEvent.VK_LEFT:
+					board.getGameProcessor().playerMove(Legend.LEFT);
+					break;
+				case KeyEvent.VK_RIGHT:
+					board.getGameProcessor().playerMove(Legend.RIGHT);
+					break;
+				case KeyEvent.VK_Q:
+					board.getGameProcessor().playerMove(Legend.UP_LEFT);
+					break;
+				case KeyEvent.VK_W:
+					board.getGameProcessor().playerMove(Legend.UP);
+					break;
+				case KeyEvent.VK_E:
+					board.getGameProcessor().playerMove(Legend.UP_RIGHT);
+					break;
+				case KeyEvent.VK_A:
+					board.getGameProcessor().playerMove(Legend.LEFT);
+					break;
+				case KeyEvent.VK_S:
+					board.getGameProcessor().playerMove(Legend.NO_MOVEMENT);
+					break;
+				case KeyEvent.VK_D:
+					board.getGameProcessor().playerMove(Legend.RIGHT);
+					break;
+				case KeyEvent.VK_Z:
+					board.getGameProcessor().playerMove(Legend.DOWN_LEFT);
+					break;
+				case KeyEvent.VK_X:
+					board.getGameProcessor().playerMove(Legend.DOWN);
+					break;
+				case KeyEvent.VK_C:
+					board.getGameProcessor().playerMove(Legend.DOWN_RIGHT);
+					break;
+				case KeyEvent.VK_J:
+					//still needs to be implemented
+					break;
+				}
 			}
 
 			@Override
@@ -39,41 +88,6 @@ public class Main {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if(board.isAnimating())
-					return;
-				
-				switch (e.getKeyChar()) {
-				case 'q':
-					board.getGameProcessor().playerMove(Legend.UP_LEFT);
-					break;
-				case 'w':
-					board.getGameProcessor().playerMove(Legend.UP);
-					break;
-				case 'e':
-					board.getGameProcessor().playerMove(Legend.UP_LEFT);
-					break;
-				case 'a':
-					board.getGameProcessor().playerMove(Legend.LEFT);
-					break;
-				case 's':
-					board.getGameProcessor().playerMove(Legend.NO_MOVEMENT);
-					break;
-				case 'd':
-					board.getGameProcessor().playerMove(Legend.RIGHT);
-					break;
-				case 'z':
-					board.getGameProcessor().playerMove(Legend.DOWN_LEFT);
-					break;
-				case 'x':
-					board.getGameProcessor().playerMove(Legend.DOWN);
-					break;
-				case 'c':
-					board.getGameProcessor().playerMove(Legend.DOWN_RIGHT);
-					break;
-				case 'j':
-					//still needs to be implemented
-					break;
-				}
 			}
 					
 			});
