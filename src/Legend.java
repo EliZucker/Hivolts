@@ -1,12 +1,12 @@
 
 public final class Legend {
-	
+
 	//ENTITIE CHARACTER VALUES
 	public static final char YOU = '+';
 	public static final char SPIKE = 'F';
 	public static final char MHO = 'M';
 	public static final char BLANK_SPACE = 'B';
-	
+
 	//VALUES CORRESPONDING TO MOVEMENT
 	public static final char NO_MOVEMENT = 0;
 	public static final char DOWN = 1;

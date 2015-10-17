@@ -18,7 +18,7 @@ public class Main {
 	private final static String TITLE = "Hivolts Recreation - Eli Zucker";
 	public static boolean messageDisplaying = false;
 	private static Gameboard board = new Gameboard();
-	
+
 	public static void main(String[] args) {
 		JOptionPane.showMessageDialog(null, "A replica of the classic arcade game \"Hivolts\" \nby Eli Zucker", TITLE, JOptionPane.INFORMATION_MESSAGE);
 		//create a JFrame window to house our FlagPanel object
@@ -30,17 +30,17 @@ public class Main {
 
 		//add the GameBoard
 		win.add(board, BorderLayout.CENTER);
-		
+
 		board.requestFocus();
 		board.requestFocusInWindow();
 		board.setFocusable(true);
-		
+
 		addKeyListener(board);
 
 		//pack everything inside the frame and make it visible
 		win.pack();
 		win.setVisible(true);
-		
+
 		//Keep redrawing the GameBoard infinitely, but only do at at an interval of ANIMATION_SPEED
 		while(true)
 		{
@@ -48,7 +48,7 @@ public class Main {
 			if(board.isAnimating()) {
 				board.increaseAnimationFrame();
 			}
-			
+
 			if(!messageDisplaying)
 				board.repaint();
 

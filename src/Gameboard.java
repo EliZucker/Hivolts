@@ -14,7 +14,7 @@ public class Gameboard extends JPanel {
 	public final int ANIMATION_SPEED = 8;
 
 	//Number of frames in each animation - higher means a smoother animation, but will take longer
-	public final int ANIMATION_INTERVALS = 100;
+	public final int ANIMATION_INTERVALS = 60;
 
 	//The current frame that the animation is on
 	private int animationFrame = -1;
@@ -25,6 +25,9 @@ public class Gameboard extends JPanel {
 	//The GameProcessor object. This object will do all of the move processing behind the scenes
 	private GameProcessor gameProcessor;
 
+	/**
+	 * Gameboard constructor
+	 */
 	public Gameboard() {
 		//Set the default size
 		setPreferredSize(new Dimension(700,700));
@@ -35,6 +38,10 @@ public class Gameboard extends JPanel {
 
 	}
 
+	/**
+	 * 
+	 * @return the GameProcessor being used by the board
+	 */
 	public GameProcessor getGameProcessor() {
 		return gameProcessor;
 	}
@@ -56,6 +63,7 @@ public class Gameboard extends JPanel {
 		if(animating)
 			gameProcessor.animatingDone();
 
+		//Change animating to its opposite value
 		animating = !animating;
 
 		//Set the animation frame back to -1
@@ -95,9 +103,10 @@ public class Gameboard extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 
+		//Stop the painting process if a message is being displayed
 		if(Main.messageDisplaying)
 			return;
-
+		//A necessary line of code when you override paintComponent
 		super.paintComponent(g);
 
 		//Checks if animation is finished, then calls toggleAnimating() if true
@@ -117,9 +126,11 @@ public class Gameboard extends JPanel {
 	 */
 	public void paintBackground(Graphics g) {
 
+		//set widthUnit and heightUnit to width/12 and height/12 respectively (because there are 12 tiles)
 		double widthUnit = getWidth()/12.0;
 		double heightUnit = getHeight()/12.0;
 
+		//Change the X and Y values in order to scale the board with a correct aspect ratio
 		if(getWidth() > getHeight()) {
 			heightUnit = getHeight()/12.0;
 			widthUnit = getHeight()/12.0;
@@ -127,8 +138,10 @@ public class Gameboard extends JPanel {
 			heightUnit = getWidth()/12.0;
 			widthUnit = getWidth()/12.0;
 		}
-		
+
+		//Change the color that is being used by Graphics
 		g.setColor(Color.BLACK);
+
 		//Loop in order to draw each line
 		for (int i = 0; i<13; i++) {
 			g.drawLine((int)(i*(widthUnit)+(getWidth()-widthUnit*12.0)/2.0), (int)((getHeight()-heightUnit*12.0)/2.0), (int)(i*(widthUnit)+(getWidth()-widthUnit*12.0)/2.0), (int)(heightUnit*12+(getHeight()-heightUnit*12.0)/2.0));
@@ -138,17 +151,19 @@ public class Gameboard extends JPanel {
 
 	public void paintGameElements(Graphics g) {
 
-		//Calls the paint method for each game element
+		//paint all of the fences first (lowest layer)
 		for (int i = 0; i < 12; i++)
 			for (int j = 0; j < 12; j++) 
 				if (gameProcessor.getMap()[i][j] instanceof Fence)
 					gameProcessor.getMap()[i][j].paint(g);
 
+		//paint the Player object next (so that it looks like the player is being eaten)
 		for (int i = 0; i < 12; i++)
 			for (int j = 0; j < 12; j++) 
 				if (gameProcessor.getMap()[i][j] instanceof Player)
 					gameProcessor.getMap()[i][j].paint(g);
 
+		//paint the Mhos last (highest layer)
 		for (int i = 0; i < 12; i++)
 			for (int j = 0; j < 12; j++) 
 				if (gameProcessor.getMap()[i][j] instanceof Mho)

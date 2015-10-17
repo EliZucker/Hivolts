@@ -14,9 +14,9 @@ import javax.swing.ImageIcon;
 
 
 public class Fence extends Unit {
-	
+
 	/**
-	 * 
+	 * A basic constructor
 	 * @param x the x coordinate of the placement on the board (0-11)
 	 * @param y the y coordinate of the placement on the board (0-11)
 	 * @param board the GameBoard object that the fence is being drawn on
@@ -25,34 +25,35 @@ public class Fence extends Unit {
 		super(x, y, board);
 
 	}
-	
+
 	/**
-	 * Override the abstract method paint, in order to implement a way to draw the object
+	 * @param g the Graphics object in which the shapes will be drawn on
+	 * Override the abstract method paint, in order to draw the shapes needed
 	 */
 	@Override
 	public void paint(Graphics g) {
-		
+
 		int x = getPaintInfo()[0];
 		int y = getPaintInfo()[1];
 		int width = getPaintInfo()[2];
 		int height = getPaintInfo()[3];
-		
+
 		g.setColor(Color.BLACK);
 		g.drawRect((int) (x+width/6.0 +getPadding()), y + getPadding(), (int) (width/6.0), height-(getPadding()*2));
 		g.drawRect(x+width-((int)(width/6.0 +getPadding()))-(int)(width/6.0), y + getPadding(), (int) (width/6.0), height-(getPadding()*2));
-		
+
 		g.setColor(new Color(92, 61, 16));
 		g.fillRect((int) (x+width/6.0 +getPadding()), y + getPadding(), (int) (width/6.0), height-(getPadding()*2));
 		g.fillRect(x+width-((int)(width/6.0 +getPadding()))-(int)(width/6.0), y + getPadding(), (int) (width/6.0), height-(getPadding()*2));
-		
+
 		g.setColor(new Color(128, 85, 22));
 		g.fillRect(x + getPadding(),(int) (y + getPadding()+height/6.0), width-(getPadding()*2), (int) (height/6.0));
 		g.fillRect(x + getPadding(),y+height-((int) (getPadding()+height/6.0))-(int) (height/6.0), width-(getPadding()*2), (int) (height/6.0));
-		
+
 		g.setColor(Color.BLACK);
 		g.drawRect(x + getPadding(),(int) (y + getPadding()+height/6.0), width-(getPadding()*2), (int) (height/6.0));
 		g.drawRect(x + getPadding(),y+height-((int) (getPadding()+height/6.0))-(int) (height/6.0), width-(getPadding()*2), (int) (height/6.0));
-		
+
 	}
 
 }
