@@ -48,10 +48,12 @@ public class Main {
 			if(board.isAnimating()) {
 				board.increaseAnimationFrame();
 			}
-
+			
+			//repaint only if there is no message
 			if(!messageDisplaying)
 				board.repaint();
-
+			
+			//sleep for ANIMATION_SPEED
 			try {
 				Thread.sleep(board.ANIMATION_SPEED);
 			} catch(InterruptedException e){
@@ -59,10 +61,17 @@ public class Main {
 			}
 		}
 	}
-
+	
+	/**
+	 * Displays a death message with some buttons
+	 * @param status -1 for loss, +1 for win
+	 * @param reason -1 for Mho, 1 for Fence
+	 */
 	public static void showEndMessage(int status, int reason) {
 		messageDisplaying = true;
 		String gameMessage ;
+		
+		//Check status and reason to determine the gameMessage
 		if(status == 1) {
 			gameMessage = "Congratulations! You Won!";
 		} else {
@@ -73,10 +82,11 @@ public class Main {
 				gameMessage = "Game Over! You landed on a Fence";
 			}
 		} 
-
+		
 		Object[] buttons = {"Restart",
 		"Quit"};
-
+		
+		//Display the JOptionDialog and assign the click to value
 		int value = JOptionPane.showOptionDialog(
 				null, 
 				gameMessage,
@@ -86,24 +96,34 @@ public class Main {
 				null, 
 				buttons, 
 				buttons[0]);
-
+		
+		//Restart the game if they click restart
 		if (value == 0) {
 			messageDisplaying = false;
 			board.getGameProcessor().restart();
-		} else {
+		} 
+		
+		//Exit the program if quit is clicked
+		else {
 			System.exit(0);
 		}
 	}
-
+	
+	/**
+	 * add a keyListener corresponding to each move
+	 * @param board the current gameboard
+	 */
 	private static void addKeyListener(Gameboard board) {
 		board.addKeyListener(new KeyListener(){
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-
+				
+				//Don't do anything mid-animation
 				if(board.isAnimating() || board.getGameProcessor().gameOver)
 					return;
-
+				
+				//Assign a new move for each key
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_DOWN:
 					board.getGameProcessor().playerMove(Legend.DOWN);
