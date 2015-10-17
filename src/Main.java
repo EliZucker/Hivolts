@@ -16,6 +16,9 @@ import javax.swing.SwingUtilities;
 
 public class Main {
 	private final static String TITLE = "Hivolts Recreation - Eli Zucker";
+	public static boolean messageDisplaying = false;
+	private static Gameboard board = new Gameboard();
+	
 	public static void main(String[] args) {
 		//create a JFrame window to house our FlagPanel object
 		JFrame win = new JFrame();
@@ -25,7 +28,6 @@ public class Main {
 		win.setMinimumSize(new Dimension(100,150));
 
 		//add the GameBoard
-		Gameboard board = new Gameboard();
 		win.add(board, BorderLayout.CENTER);
 		
 		board.requestFocus();
@@ -45,7 +47,9 @@ public class Main {
 			if(board.isAnimating()) {
 				board.increaseAnimationFrame();
 			}
-			board.repaint();
+			
+			if(!messageDisplaying)
+				board.repaint();
 
 			try {
 				Thread.sleep(board.ANIMATION_SPEED);
@@ -56,6 +60,7 @@ public class Main {
 	}
 
 	public static void showEndMessage(int status, int reason) {
+		messageDisplaying = true;
 		String gameMessage ;
 		if(status == 1) {
 			gameMessage = "Congratulations! You Won!";
@@ -82,7 +87,9 @@ public class Main {
 				buttons[0]);
 
 		if (value == 0) {
-			//restart
+			messageDisplaying = false;
+			board.getGameProcessor().restart();
+			
 		} else {
 			System.exit(0);
 		}

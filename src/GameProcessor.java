@@ -85,7 +85,16 @@ public class GameProcessor {
 			}
 		}
 	}
-
+	
+	public void restart() {
+		mhoLocations.clear();
+		generateMap();
+		newPlayerLocation = playerLocation;
+		copyMap();
+		gameOver = false;
+		win = false;
+	}
+	
 	public Unit[][] getMap() {
 		return map;
 	}
