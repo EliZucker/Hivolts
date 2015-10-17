@@ -20,6 +20,7 @@ public class Main {
 	private static Gameboard board = new Gameboard();
 	
 	public static void main(String[] args) {
+		JOptionPane.showMessageDialog(null, "A replica of the classic arcade game \"Hivolts\" \nby Eli Zucker", TITLE, JOptionPane.INFORMATION_MESSAGE);
 		//create a JFrame window to house our FlagPanel object
 		JFrame win = new JFrame();
 		win.setTitle(TITLE);
@@ -89,7 +90,6 @@ public class Main {
 		if (value == 0) {
 			messageDisplaying = false;
 			board.getGameProcessor().restart();
-			
 		} else {
 			System.exit(0);
 		}

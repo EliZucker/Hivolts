@@ -28,24 +28,24 @@ public class Gameboard extends JPanel {
 	public Gameboard() {
 		//Set the default size
 		setPreferredSize(new Dimension(700,700));
-		
+
 		//instantiates the GameProcessor object
 		gameProcessor = new GameProcessor(this);
 
 
 	}
-	
+
 	public GameProcessor getGameProcessor() {
 		return gameProcessor;
 	}
-	
+
 	/**
 	 * Called when the frame of animation has changed
 	 */
 	public void increaseAnimationFrame() {
 		animationFrame+=1;
 	}
-	
+
 
 	/**
 	 * Called whenever the state of animating has changed
@@ -94,6 +94,10 @@ public class Gameboard extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
+
+		if(Main.messageDisplaying)
+			return;
+
 		super.paintComponent(g);
 
 		//Checks if animation is finished, then calls toggleAnimating() if true
@@ -113,11 +117,9 @@ public class Gameboard extends JPanel {
 	 */
 	public void paintBackground(Graphics g) {
 
-		g.setColor(Color.BLACK);
-		
 		double widthUnit = getWidth()/12.0;
 		double heightUnit = getHeight()/12.0;
-		
+
 		if(getWidth() > getHeight()) {
 			heightUnit = getHeight()/12.0;
 			widthUnit = getHeight()/12.0;
@@ -126,12 +128,12 @@ public class Gameboard extends JPanel {
 			widthUnit = getWidth()/12.0;
 		}
 		
+		g.setColor(Color.BLACK);
 		//Loop in order to draw each line
 		for (int i = 0; i<13; i++) {
 			g.drawLine((int)(i*(widthUnit)+(getWidth()-widthUnit*12.0)/2.0), (int)((getHeight()-heightUnit*12.0)/2.0), (int)(i*(widthUnit)+(getWidth()-widthUnit*12.0)/2.0), (int)(heightUnit*12+(getHeight()-heightUnit*12.0)/2.0));
 			g.drawLine((int)((getWidth()-widthUnit*12.0)/2.0), (int)(i*(heightUnit)+(getHeight()-heightUnit*12.0)/2.0), (int)(widthUnit*12+(getWidth()-widthUnit*12.0)/2.0), (int)(i*(heightUnit)+(getHeight()-heightUnit*12.0)/2.0));
 		}
-
 	}
 
 	public void paintGameElements(Graphics g) {
@@ -141,12 +143,12 @@ public class Gameboard extends JPanel {
 			for (int j = 0; j < 12; j++) 
 				if (gameProcessor.getMap()[i][j] instanceof Fence)
 					gameProcessor.getMap()[i][j].paint(g);
-		
+
 		for (int i = 0; i < 12; i++)
 			for (int j = 0; j < 12; j++) 
 				if (gameProcessor.getMap()[i][j] instanceof Player)
 					gameProcessor.getMap()[i][j].paint(g);
-		
+
 		for (int i = 0; i < 12; i++)
 			for (int j = 0; j < 12; j++) 
 				if (gameProcessor.getMap()[i][j] instanceof Mho)

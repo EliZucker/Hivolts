@@ -80,6 +80,8 @@ public class GameProcessor {
 				map[x][y] = new Player(x, y, board);
 				playerLocation[0] = x;
 				playerLocation[1] = y;
+				newPlayerLocation[0] = x;
+				newPlayerLocation[1] = y;
 				spaceUsed[x][y] = true;
 				return;
 			}
@@ -89,10 +91,9 @@ public class GameProcessor {
 	public void restart() {
 		mhoLocations.clear();
 		generateMap();
-		newPlayerLocation = playerLocation;
-		copyMap();
 		gameOver = false;
 		win = false;
+		board.repaint();
 	}
 	
 	public Unit[][] getMap() {
@@ -276,10 +277,6 @@ public class GameProcessor {
 		}
 
 		board.toggleAnimating();
-	}
-
-	private void jump() {
-
 	}
 
 	private void moveMhos() {
