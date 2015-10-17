@@ -21,23 +21,24 @@ public class Main {
 
 	public static void main(String[] args) {
 		JOptionPane.showMessageDialog(null, "A replica of the classic arcade game \"Hivolts\" \nby Eli Zucker", TITLE, JOptionPane.INFORMATION_MESSAGE);
-		//create a JFrame window to house our FlagPanel object
+		//Create a JFrame window to house our FlagPanel object
 		JFrame win = new JFrame();
 		win.setTitle(TITLE);
 		win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		win.setLayout(new BorderLayout());
 		win.setMinimumSize(new Dimension(100,150));
 
-		//add the GameBoard
+		//Add the GameBoard
 		win.add(board, BorderLayout.CENTER);
 
 		board.requestFocus();
 		board.requestFocusInWindow();
 		board.setFocusable(true);
-
+		
+		//Add the keyListener (for movements)
 		addKeyListener(board);
 
-		//pack everything inside the frame and make it visible
+		//Pack everything inside the frame and make it visible
 		win.pack();
 		win.setVisible(true);
 
