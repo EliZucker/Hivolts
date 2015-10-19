@@ -20,7 +20,7 @@ public class Main {
 	private static Gameboard board = new Gameboard();
 
 	public static void main(String[] args) {
-		JOptionPane.showMessageDialog(null, "A replica of the classic arcade game \"Hivolts\" \nby Eli Zucker", TITLE, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, "A replica of the classic arcade game \"Hivolts\" \nby Eli Zucker\n\nUse the 3x3 arrangement of keys on the left side of your keyboard to move (e.g w = up)", TITLE, JOptionPane.INFORMATION_MESSAGE);
 		//Create a JFrame window to house our FlagPanel object
 		JFrame win = new JFrame();
 		win.setTitle(TITLE);

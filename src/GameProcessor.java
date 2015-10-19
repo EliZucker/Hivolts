@@ -44,7 +44,7 @@ public class GameProcessor {
 		this.board=board;
 
 		//generate the intial locations of the Mhos, Fence, and Player
-		generateMap();
+		generateMap();	
 	}
 
 	/**
